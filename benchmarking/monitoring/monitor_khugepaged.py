@@ -3,21 +3,35 @@ import logging
 import psutil
 import time
 
-filename = 'khugepaged_log'
+filename = 'memusage_mdb_thp.csv'
 logging.basicConfig(filename=filename,level=logging.INFO, filemode='w', format='%(asctime)s,%(message)s', datefmt='%a %b %d %H:%M:%S %Y')
 
 def log(message):
     logging.info(message)
 
-proc_name='khugepaged'
-pid = int(check_output(['pidof', proc_name]))
+thp_proc_name='khugepaged'
+mdb_proc_name='/usr/bin/mongod'
+thp_pid = int(check_output(['pidof', thp_proc_name]))
+mdb_pid = int(check_output(['pidof', mdb_proc_name]))
+
 # log('PID of khugepaged process is {}'.format(pid))
 # log('')
 # log('Starting to monitor {}'.format(pid))
-log('Memory (MB),CPU (%)')
+log('Memory Used (%) Overall,CPU (%) Overall, Memory Used (%) MongoDB, CPU (%) MongoDB, Memory Used (%) khugepaged, CPU (%) khugepaged')
 
+thp_proc = psutil.Process(thp_pid)
+mdb_proc = psutil.Process(mdb_pid)
+
+psutil.cpu_percent()
+mdb_proc.cpu_percent()
+thp_proc.cpu_percent()
 while True:
-    proc = psutil.Process(pid)
-    log('{},{}'.format((proc.memory_info_ex().rss)/(1024.0 * 1024.0), proc.cpu_percent(interval=1))) 
+    time.sleep(1)
+    log('{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f}'.format(
+            100 * (psutil.virtual_memory().used/psutil.virtual_memory().total), (psutil.cpu_percent()),
+            mdb_proc.memory_percent(), mdb_proc.cpu_percent(),
+            thp_proc.memory_percent(), thp_proc.cpu_percent()
+        )
+    ) 
 
  

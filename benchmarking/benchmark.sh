@@ -6,6 +6,7 @@ run_workload()
 {
     mon_pid=0
     wl=$1
+    log_name=memusage_mdb_thp
     if [ ! -z $2 ] && [ $2 == 'monitor' ]; then
         echo 'Starting to monitor khugepaged for WL ' $wl
         python3 monitoring/monitor_khugepaged.py &
@@ -20,8 +21,8 @@ run_workload()
     if [ $mon_pid -gt 0 ]; then
         kill $mon_pid
         # Save monitoring file
-        echo 'Saved monitor log to ' monitoring/khugepaged_log_wl_$wl
-        mv khugepaged_log monitoring/khugepaged_log_wl_$wl
+        echo 'Saved monitor log to ' monitoring/$log_name"_wl_"$wl.csv
+        mv monitoring/$log_name.csv monitoring/$log_name"_wl_"$wl.csv
     fi
 }
 
