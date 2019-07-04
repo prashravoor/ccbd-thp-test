@@ -43,3 +43,5 @@ It needs to run as superuser since the statistics collected using `perf` need ro
 `./run.sh [Matrix Dimension]` <br>
 The matrix dimension specifies `n` for an `n x n` matrix. 
 For example,`./run.sh 512` <br>
+<br>
+**The `benchmarking` folder contains code to test the MongoDB database using the YCSB benchmark suite**
