@@ -22,7 +22,7 @@ run_workload()
         kill $mon_pid
         # Save monitoring file
         echo 'Saved monitor log to ' monitoring/$log_name"_wl_"$wl.csv
-        mv monitoring/$log_name.csv monitoring/$log_name"_wl_"$wl.csv
+        mv $log_name.csv monitoring/$log_name"_wl_"$wl.csv
     fi
 }
 
@@ -41,6 +41,11 @@ run_workload b $1
 echo
 echo 'Running Workload C'
 run_workload c $1
+
+# Run WL R - Read Only, Random Reads
+echo
+echo 'Running Workload R'
+run_workload r $1
 
 # Run WL F - Read-Modify-Write
 echo

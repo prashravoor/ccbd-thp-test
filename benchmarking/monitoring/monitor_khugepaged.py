@@ -22,6 +22,8 @@ log('Memory Used (%) Overall,CPU (%) Overall, Memory Used (%) MongoDB, CPU (%) M
 thp_proc = psutil.Process(thp_pid)
 mdb_proc = psutil.Process(mdb_pid)
 
+num_cpus = psutil.cpu_count()
+
 psutil.cpu_percent()
 mdb_proc.cpu_percent()
 thp_proc.cpu_percent()
@@ -29,8 +31,8 @@ while True:
     time.sleep(1)
     log('{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f}'.format(
             100 * (psutil.virtual_memory().used/psutil.virtual_memory().total), (psutil.cpu_percent()),
-            mdb_proc.memory_percent(), mdb_proc.cpu_percent(),
-            thp_proc.memory_percent(), thp_proc.cpu_percent()
+            mdb_proc.memory_percent(), mdb_proc.cpu_percent()/num_cpus, # Normalize to 100%
+            thp_proc.memory_percent(), thp_proc.cpu_percent()/num_cpus # Normalize to 100%
         )
     ) 
 

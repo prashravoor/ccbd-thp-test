@@ -19,8 +19,8 @@ def plot_metric(json_data, metric_name):
         x = []
         y = []
         for i in metric_data:
-            x.append(int(i['measurement']))
-            y.append(float(i['value']))
+            x.append(int(i['measurement'])/1000)
+            y.append(float(i['value'])/1000.0)
 
         plt.plot(x,y,label=metric_name)
 
@@ -29,12 +29,14 @@ prefix = fname.split('_')[1][0].upper()
 
 # Plot READ
 plot_metric(data, 'READ')
+plot_metric(data, 'READ-MODIFY-WRITE')
 plot_metric(data, 'UPDATE')
 plot_metric(data, 'INSERT')
 plot_metric(data, 'SCAN')
+# plot_metric(data, 'CLEANUP')
 plt.title('Workload {}'.format(prefix))
-plt.xlabel('Time (milliseconds)')
-plt.ylabel('Average latency (us)')
+plt.xlabel('Time (seconds)')
+plt.ylabel('Average latency (ms)')
 plt.legend()
 
 plt.show()
