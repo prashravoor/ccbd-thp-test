@@ -30,6 +30,11 @@ if [ ! -z $2 ] && [ $2 == 'clean' ]; then
     echo 'Cleaning and recreating DB'
     mongo < cleanup.mdb
     $YCSB load mongodb -P $wl_name -P $WL -s 2> logs/errors_load_wl_$wl | tee logs/wl_load_$wl.txt
+    if [ ! -z $3 ] && [ $3 == 'thp' ]; then
+        outfile=logs/json_$wl"_thp.json"
+    fi
+elif [ ! -z $2 ] && [ $2 == 'thp' ]; then
+    outfile=logs/json_$wl"_thp.json"
 fi
 
 $YCSB run mongodb -P $wl_name -P $WL -p exportfile=$outfile -s 2> logs/errors_run_wl_$wl | tee logs/wl_$wl.run.txt

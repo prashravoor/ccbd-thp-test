@@ -15,12 +15,15 @@ Run `pip install -r requirements.txt` under the `monitoring` folder to install a
 Fix the `test_workload.sh` if need to set the path to `YCSB_BASE` <br>
 
 ## Capturing Base statistics
-Ensure that transparent huge paging is set to `never` or `madvise`, and run `benchmark.sh` to capture logs for base statistics <br>
+Ensure that transparent huge paging is set to `never` or `madvise`, and run `benchmark.sh` to capture logs for base statistics. Specify the `monitor` argument as well, to capture memory and CPU usage stats <br>
 **Make sure to save all logs under the `logs` folder before proceeding!** <br>
+Run the `delete_logs.sh` script to create a tarball of all needed logs, and save it to the folder `logs/backups` <br>
 
 ## Capture THP Stats
-Enable THP by setting policy to `always`. Then run `benchmark.sh monitor` to capture the statistics of the khugepaged daemon. These logs are stored under the `monitoring` folder. <br>
+Enable THP by setting policy to `always`. Then run `benchmark.sh monitor thp` to capture the statistics of the khugepaged daemon. These logs are stored under the `monitoring` folder. <br>
 
 ## Viewing Graphs
-**TODO**
+* To view a summary of performance of THP vs regular pages, extract the required logs, copy the files with the prefix `json_*` from both log sets to a common folder, say `logs`, and run `python plots/plot_summaries.py logs` to generate a graph.
+* To view memory and CPU usage patterns of a particular workload run, use `python plots/plot_mem_usage.py monitoring/memusage_...`. It generates two graphs, one for CPU usage, and another for Memory usage. 
+* To view a histogram of average latencies for a particular workload, run `python plots/plot_histograms.py <JSON file>`, for e.g. `python plots/plot_histograms.py logs/json_a_thp.json`
 

@@ -25,7 +25,7 @@ with open(filename_reg) as f:
     data = json.load(f)
     f.close()
 
-with open(filename_reg) as f:
+with open(filename_thp) as f:
     thp_data = json.load(f)
     f.close()
 
@@ -40,7 +40,7 @@ def plot_metric(fig, json_data, metric_name, thp=False):
         if thp:
             label = '{} using THP'.format(metric_name)
 
-        fig.hist(x, label=label, histtype='step', bins=200)
+        fig.hist(x, label=label, histtype='step', bins=20)
         return True
     return False
 
@@ -50,7 +50,8 @@ N = len(metrics)
 cols = 2 
 rows = int(math.ceil(N/cols))
 
-gs = gridspec.GridSpec(rows,cols)
+# gs = gridspec.GridSpec(rows,cols)
+gs = gridspec.GridSpec(2, 2)
 
 fig = plt.figure()
 
