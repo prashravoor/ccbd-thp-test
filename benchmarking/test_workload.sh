@@ -4,7 +4,7 @@ YCSB_BASE=~/YCSB/ycsb-mongodb-binding-0.15.0
 
 YCSB=$YCSB_BASE/bin/ycsb
 WORKLOADS=$YCSB_BASE/workloads
-WL=lg_wl
+WL=lg_wl_hist
 
 wl='a'
 
@@ -37,5 +37,5 @@ elif [ ! -z $2 ] && [ $2 == 'thp' ]; then
     outfile=logs/json_$wl"_thp.json"
 fi
 
-$YCSB run mongodb -P $wl_name -P $WL -p exportfile=$outfile -s 2> logs/errors_run_wl_$wl | tee logs/wl_$wl.run.txt
+$YCSB run mongodb -jvm-args "-Xms1024m -Xms1024m" -P $wl_name -P $WL -p exportfile=$outfile -s 2> logs/errors_run_wl_$wl | tee logs/wl_$wl.run.txt
 

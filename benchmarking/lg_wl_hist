@@ -1,6 +1,8 @@
-recordcount=1500000
+recordcount=2000000
 operationcount=1000000
 threadcount=8
 measurementtype=hdrhistogram
 hdrhistogram.fileoutput=true
 hdrhistogram.output.path=/home/prash/ccbd/ccbd-thp-test/benchmarking/logs/hdr/
+fieldcount=100
+exporter=com.yahoo.ycsb.measurements.exporter.JSONArrayMeasurementsExporter

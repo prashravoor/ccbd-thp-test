@@ -3,3 +3,4 @@ operationcount=1000000
 threadcount=8
 measurementtype=timeseries
 exporter=com.yahoo.ycsb.measurements.exporter.JSONArrayMeasurementsExporter
+fieldcount=100

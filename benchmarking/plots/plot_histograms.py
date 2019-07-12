@@ -46,17 +46,24 @@ def plot_metric(fig, json_data, metric_name, thp=False):
 
 
 metrics = ['READ', 'INSERT', 'READ-MODIFY-WRITE', 'SCAN', 'UPDATE']
-N = len(metrics)
+to_plot = []
+N = 0
+for m in metrics:
+    metric_data = list(filter(lambda x: (x['measurement'].isdigit() and x['metric'] == m), (data)))
+    if len(metric_data) > 0:
+        N += 1
+        to_plot.append(m)
+
+print('Will show {} graphs'.format(N))
 cols = 2 
 rows = int(math.ceil(N/cols))
 
-# gs = gridspec.GridSpec(rows,cols)
-gs = gridspec.GridSpec(2, 2)
+gs = gridspec.GridSpec(rows,cols)
 
 fig = plt.figure()
 
 i = 0
-for m in metrics:
+for m in to_plot:
     fig1 = fig.add_subplot(gs[i])
     if plot_metric(fig1, data, m):
         plot_metric(fig1, thp_data, m, thp=True)

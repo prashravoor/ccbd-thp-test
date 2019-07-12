@@ -29,6 +29,16 @@ run_workload()
         echo 'Saved monitor log to ' monitoring/$log_name"_wl_"$wl.csv
         mv $log_name.csv monitoring/$log_name"_wl_"$wl.csv
     fi
+
+    cwd=`pwd`
+    cd logs/hdr
+    for f in *.hdr; do
+        if [ -e "$f" ]; then
+# Use .hd instead of .hdr to avoid recursive expansion of files from previous workloads
+            mv $f ${f%.*}"_"$wl".hd"
+        fi
+    done 
+    cd $cwd
 }
 
 
@@ -67,4 +77,10 @@ echo
 echo 'Running Workload E'
 run_workload e $1 clean $2
 
-
+# Change back all .hd files to .hdr
+cwd=`pwd`
+cd logs/hdr
+for f in *.hd; do
+    mv $f ${f%.*}".hdr"
+done
+cd $cwd

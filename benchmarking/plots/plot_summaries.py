@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib import gridspec
 import sys
 import os
+import numpy as np
 
 if not len(sys.argv) == 2:
     print('Usage: {} <log directory>'.format(sys.argv[0]))
@@ -21,10 +22,12 @@ def get_filenames(wl):
     return filename_reg,filename_thp
 
 workloads = ['a','b','c','d','e','f','r']
+# workloads = ['a','b','c','d','f','r']
 
 times_reg = []
 times_thp = []
 
+x = np.arange(len(workloads))
 for wl in workloads:
     data = {}
     thp_data = {}
@@ -38,18 +41,29 @@ for wl in workloads:
         f.close()
 
     metrics = 'OVERALL'
-    measurement = 'RunTime(ms)'
+    # measurement = 'RunTime(ms)'
+    measurement = 'Throughput(ops/sec)'
 
     tmp = list(filter(lambda x: (x['metric'] == metrics and x['measurement'] == measurement), (data)))
-    times_reg.append(float(tmp[0]['value'])/1000.0)
+    if len(tmp) > 0:
+        # times_reg.append(float(tmp[0]['value'])/1000.0)
+        times_reg.append(float(tmp[0]['value']))
+    else:
+        times_reg.append(0)
 
     tmp = list(filter(lambda x: (x['metric'] == metrics and x['measurement'] == measurement), (thp_data)))
-    times_thp.append(float(tmp[0]['value'])/1000.0)
+    if len(tmp) > 0:
+        # times_thp.append(float(tmp[0]['value'])/1000.0)
+        times_thp.append(float(tmp[0]['value']))
+    else:
+        times_thp.append(0)
 
 
-plt.plot(workloads, times_reg, label='Regular Pages')
-plt.plot(workloads, times_thp, label='THP Enabled')
-plt.ylabel('Total Runtime (sec)')
+width=.35
+plt.bar(x - width/2, times_reg, label='Regular Pages', width=width)
+plt.bar(x + width/2, times_thp, label='THP Enabled', width=width)
+plt.ylabel('Average Throughput (ops/sec)')
 plt.xlabel('Workload Name')
+plt.xticks(x.tolist(), workloads)
 plt.legend()
 plt.show()
