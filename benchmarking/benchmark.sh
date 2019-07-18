@@ -75,7 +75,7 @@ run_workload d $1 $2
 # Run WL D - Read in short ranges of records rather than single
 echo
 echo 'Running Workload E'
-run_workload e $1 clean $2
+# run_workload e $1 clean $2
 
 # Change back all .hd files to .hdr
 cwd=`pwd`

@@ -1,4 +1,4 @@
-recordcount=2000000
+recordcount=1000000
 operationcount=1000000
 threadcount=8
 measurementtype=hdrhistogram
