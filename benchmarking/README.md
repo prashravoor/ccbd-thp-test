@@ -27,3 +27,9 @@ Enable THP by setting policy to `always`. Then run `benchmark.sh monitor thp` to
 * To view memory and CPU usage patterns of a particular workload run, use `python plots/plot_mem_usage.py monitoring/memusage_...`. It generates two graphs, one for CPU usage, and another for Memory usage. 
 * To view a histogram of average latencies for a particular workload, run `python plots/plot_histograms.py <JSON file>`, for e.g. `python plots/plot_histograms.py logs/json_a_thp.json`
 
+## Running MySQL benchmarks
+MySQL benchmarks can be run with sysbench installed. Install sysbench first through `sudo apt install sysbench` <br>
+Then run the `mysql-bench.sh` script to start executing the mysql benchmarks <br>
+`collect_mysql_logs.sh` will make a tar of the necessary log files and place them in the logs/backups folder <br>
+Copy relevent log files to a single folder (thp logs should have a `_thp.log` suffix, and fragmented thp files should have `_thp_frag.log` suffix <br>
+Once all files have been copied to a single folder, run `python plots/mysql_plot_graphs.py <folder> [save]` to generate a graph (The "save" option if specified, generates csv files that saves intermediate results <br>

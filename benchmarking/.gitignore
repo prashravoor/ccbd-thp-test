@@ -1,5 +1,4 @@
-logs/errors_*
-logs/wl_*
-logs/json_*
+logs/*
 monitoring/memusage_*
 logs/backups
+*.png
