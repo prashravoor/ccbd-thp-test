@@ -3,7 +3,7 @@ import logging
 import psutil
 import time
 
-filename = 'memusage_sql_thp.csv'
+filename = 'memusage_sql.csv'
 logging.basicConfig(filename=filename,level=logging.INFO, filemode='w', format='%(asctime)s,%(message)s', datefmt='%a %b %d %H:%M:%S %Y')
 
 def log(message):

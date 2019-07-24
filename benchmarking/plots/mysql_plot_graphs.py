@@ -94,8 +94,8 @@ if len(sys.argv) == 3 and sys.argv[2] == 'save':
         csv.writer(f).writerows(stats_frag)
         f.close()
 
-measurement = '99th Percentile Latency (ms)'
-measurement_index = 5
+measurement = 'Average Latency (ms)'
+measurement_index = 3
 times_reg = list(map(lambda x: x[measurement_index], stats_reg))
 times_thp = list(map(lambda x: x[measurement_index], stats_thp))
 times_frag = list(map(lambda x: x[measurement_index], stats_frag))

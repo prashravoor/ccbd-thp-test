@@ -27,9 +27,22 @@ Enable THP by setting policy to `always`. Then run `benchmark.sh monitor thp` to
 * To view memory and CPU usage patterns of a particular workload run, use `python plots/plot_mem_usage.py monitoring/memusage_...`. It generates two graphs, one for CPU usage, and another for Memory usage. 
 * To view a histogram of average latencies for a particular workload, run `python plots/plot_histograms.py <JSON file>`, for e.g. `python plots/plot_histograms.py logs/json_a_thp.json`
 
-## Running MySQL benchmarks
-MySQL benchmarks can be run with sysbench installed. Install sysbench first through `sudo apt install sysbench` <br>
+## Running MySQL benchmarks (Sysbench)
+MySQL benchmarks can be run with sysbench and MySQL server installed. Install sysbench first through `sudo apt install sysbench` <br>
+Install MySQL server (version 5.7+), and modify the `mysql_test_workload.sh` file and set the correct username and password for the mysql server <br> 
 Then run the `mysql-bench.sh` script to start executing the mysql benchmarks <br>
+(If running with THP enabled, run with `mysql-bench.sh thp` to mark all logs as run with THP enabled. Ease of use only) <br>
 `collect_mysql_logs.sh` will make a tar of the necessary log files and place them in the logs/backups folder <br>
 Copy relevent log files to a single folder (thp logs should have a `_thp.log` suffix, and fragmented thp files should have `_thp_frag.log` suffix <br>
 Once all files have been copied to a single folder, run `python plots/mysql_plot_graphs.py <folder> [save]` to generate a graph (The "save" option if specified, generates csv files that saves intermediate results <br>
+
+## Running MySQL benchmarks (YCSB)
+Similar to setting up the mongodb-binding, setup the jdbc-binding <br>
+There is an error in the YCSB JdbcCreateTable code, so that utility cannot be used by default. Obtain the source for YCSB, and modify the following file: <br>
+Change the line `(YCSB_KEY VARCHAR PRIMARY KEY` in the `createTable` function in the file `YCSB/jdbc/src/main/java/com/yahoo/ycsb/db/JdbcDBCreateTable.java` to <br>
+`(YCSB_KEY VARCHAR(255) PRIMARY KEY` <br>
+Then compile the code using the command `mvn -pl com.yahoo.ycsb:jdbc-binding -am clean package` <br>
+There would be a tarball generated under `jdbc/target` folder, which can be extracted to a suitable location (Set this path as the `YCSB_BASE` path in the file `mysql_test_workload.sh` file) <br>
+Set the correct properties for the database in the file `db.properties` <br>
+Run the YCSB benchmark for MySQL by running the script `mysql-bench.sh ycsb [thp]` <br>
+Collection of logs, Generation of graphs etc. is identical to procedure with MongoDB <br>
