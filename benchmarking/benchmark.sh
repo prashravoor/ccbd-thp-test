@@ -21,6 +21,11 @@ run_workload()
         thp=$2
     fi
 
+    mongo_pid=`ps -ef | grep mongod | grep -v grep | awk '{print $2}'`
+    perf record -F 999 -p $mongo_pid -o perf.data"_"$wl \
+        -e page-faults,dTLB-load-misses,dTLB-loads,dTLB-store-misses,dTLB-stores,iTLB-load-misses,iTLB-loads &
+    perf_pid=$!
+        
     ./test_workload.sh $wl $clean $thp
     
     if [ $mon_pid -gt 0 ]; then
@@ -29,6 +34,8 @@ run_workload()
         echo 'Saved monitor log to ' monitoring/$log_name"_wl_"$wl.csv
         mv $log_name.csv monitoring/$log_name"_wl_"$wl.csv
     fi
+    kill $perf_pid
+    mv perf.data"_"$wl monitoring
 
     cwd=`pwd`
     cd logs/hdr

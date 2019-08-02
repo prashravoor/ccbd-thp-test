@@ -1,6 +1,6 @@
 #! /bin/bash
 
-WL_PROFILE=lg_wl
+WL_PROFILE=lg_wl_hist
 
 DATE=$(date +"%d%m%Y%H%M")
 tar -cf logs/backups/wl_run_logs_$DATE.tgz $WL_PROFILE logs/wl_* logs/errors_* logs/json_* monitoring/memusage_* logs/hdr/*.hdr

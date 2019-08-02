@@ -65,7 +65,7 @@ int main(int argc, char **argv)
         create_matrix(&matrices[i], N);
         read_matrix(matrices[i], N);
         // sleep(1);
-        free_matrix(&matrices[i], N);
+        // free_matrix(&matrices[i], N);
     }
 
     printf("Allocations complete, partial free done, Sleeping...\n");

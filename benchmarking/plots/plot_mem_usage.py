@@ -29,6 +29,7 @@ y_mem_mdb = []
 y_cpu_mdb = []
 y_mem_thp = []
 y_cpu_thp = [] 
+y_mem_hp = []
 
 for line in csv_lines:
     x.append(time.mktime(time.strptime(line[0])) - baseline)
@@ -38,10 +39,12 @@ for line in csv_lines:
     y_cpu_mdb.append(float(line[4]))
     y_mem_thp.append(float(line[5]))
     y_cpu_thp.append(float(line[6]))
+    y_mem_hp.append(float(line[7]))
 
 plt.plot(x, y_mem_ovr, label=header[1])
 plt.plot(x, y_mem_mdb, label=header[3])
 plt.plot(x, y_mem_thp, label=header[5])
+plt.plot(x, y_mem_hp, label=header[7])
 plt.legend()
 plt.xlabel('Time (s)')
 plt.ylabel('Memory Usage (%)')

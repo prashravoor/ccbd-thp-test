@@ -23,8 +23,8 @@ def get_filenames(wl):
 
     return filename_reg,filename_thp,filename_thp_frag
 
-#workloads = ['a','b','c','d','e','f','r']
-workloads = ['a','b','c','d','f','r']
+# workloads = ['a','b','c','d','e','f','r']
+workloads = ['a','b','c','d','e','f']
 
 times_reg = []
 times_thp = []
@@ -78,8 +78,9 @@ plt.bar(x - width, times_reg, label='Regular Pages', width=width)
 plt.bar(x, times_thp, label='THP Enabled', width=width)
 plt.bar(x + width, times_thp_frag, label='THP Enabled (Highly Fragmented)', width=width)
 plt.ylabel(measurement)
+# plt.ylabel('Total Runtime (seconds)')
 plt.xlabel('Workload Name')
 plt.xticks(x.tolist(), workloads)
 plt.legend()
-plt.title('Measured over {} operations on MongoDB, with record size {}, database contains {} records'.format('1 Million', '10KB', '1 Million'))
+plt.title('Measured over {} operations on MySQL, with record size {}, database contains {} records'.format('0.5 Million', '1.5KB', '0.5 Million'))
 plt.show()

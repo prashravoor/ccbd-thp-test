@@ -22,7 +22,7 @@ def get_filenames(wl):
     return filename_reg,filename_thp
 
 # workloads = ['a','b','c','d','e','f','r']
-workloads = ['a','b','c','d','f','r']
+workloads = ['a','b','c','d','e','f']
 
 times_reg = []
 times_thp = []
