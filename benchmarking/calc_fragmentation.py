@@ -6,9 +6,9 @@ with open('/proc/buddyinfo') as f:
 
 blocks = {}
 for line in lines:
-    tmp = list(map(lambda x: x.strip(), line.split()))[3:]
-    bl = list(map(lambda x: int(x), tmp[1:]))
-    blocks[tmp[0]] = bl
+    tmp = list(map(lambda x: x.strip(), line.split()))
+    bl = list(map(lambda x: int(x), tmp[4:]))
+    blocks['{}{} {}'.format(tmp[0],tmp[1], tmp[3])] = bl
 
 alloc_index = 9 # 2^9 * 4KB = 2MB
 
