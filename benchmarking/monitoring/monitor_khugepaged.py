@@ -27,7 +27,7 @@ mdb_pid = int(check_output(['pidof', mdb_proc_name]))
 # log('PID of khugepaged process is {}'.format(pid))
 # log('')
 # log('Starting to monitor {}'.format(pid))
-log('Memory Used (%) Overall,CPU (%) Overall, Memory Used (%) MongoDB, CPU (%) MongoDB, Memory Used (%) khugepaged, CPU (%) khugepaged,Process HugePages (MB)')
+log('Memory Used (%) Overall,CPU (%) Overall, Memory Used (%) MongoDB, CPU (%) MongoDB, Memory Used (%) khugepaged, CPU (%) khugepaged,Process HugePages (%)')
 
 thp_proc = psutil.Process(thp_pid)
 mdb_proc = psutil.Process(mdb_pid)

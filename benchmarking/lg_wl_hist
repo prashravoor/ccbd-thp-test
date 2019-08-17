@@ -1,8 +1,9 @@
-recordcount=1000000
-operationcount=1000000
-threadcount=8
+recordcount=1000
+operationcount=1000
+threadcount=96
 measurementtype=hdrhistogram
 hdrhistogram.fileoutput=true
-hdrhistogram.output.path=/home/prash/ccbd/ccbd-thp-test/benchmarking/logs/hdr/
-fieldcount=100
+hdrhistogram.output.path=/home/student1/thp/ccbd-thp-test/benchmarking/logs/hdr/
+fieldcount=10
 exporter=com.yahoo.ycsb.measurements.exporter.JSONArrayMeasurementsExporter
+mongodb.url=mongodb://hostname:27017
