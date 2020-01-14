@@ -11,6 +11,12 @@ Requirements <br>
 Tested on Ubuntu 18.04 <br>
 Run `pip install -r requirements.txt` under the `monitoring` folder to install all requirements for monitoring khugepaged.
 
+## Setting up SystemTap
+SystemTap needs to be installed to capture pagefault times. Set it up following instructions from [here](https://wiki.ubuntu.com/Kernel/Systemtap#Where_to_get_debug_symbols_for_kernel_X.3F)
+
+### Fixing Java Dependency Error
+Java 11 removes the default existing packages of Javax XML bind. This causes a classdefnotfound error. To fix this download [this](https://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.0/jaxb-api-2.3.0.jar) jar file, and copy it to `$YCSB_LOCATION/lib` folder.
+
 ## Config
 Fix the `test_workload.sh` if need to set the path to `YCSB_BASE` <br>
 
