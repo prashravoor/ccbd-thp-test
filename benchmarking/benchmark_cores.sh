@@ -5,46 +5,25 @@
 DIR=/home/prashanth/thp/ccbd-thp-test/benchmarking
 export HOST=$HOST
 
-run_workload()
-{
-    wl=$1
-    thp=$2
-    if [ ! -z $2 ] && [ $2 == 'clean' ]; then
-        clean=$2
-        thp=$3
-    else
-	clean=
-    fi
-
-    ssh root@$HOST "nohup $DIR/start_record.sh $wl >> $DIR/monitoring/start_record_log 2>&1"
-    ./test_workload.sh $wl $clean $thp
-    ssh root@$HOST "$DIR/stop_record.sh $wl >> $DIR/monitoring/stop_record_log 2>&1"
-    cwd=`pwd`
-    cd $DIR/logs/hdr
-    for f in *.hdr; do
-	if [ -e "$f" ]; then
-	# Use .hd instead of .hdr to avoid recursive expansion of files from previous workloads
-	    mv $f ${f%.*}"_"$wl".hdr"
-   	fi
-    done
-    cd $cwd
-	./delete_logs.sh $wl"_warmup_"
-}
-
 run_workload_restart()
 {
     wl=$1
-    thp=$2
+    num_cores=$2
     if [ ! -z $2 ] && [ $2 == 'clean' ]; then
         clean=$2
-        thp=$3
+        num_cores=$3
     else
 	clean=
     fi
 
-    ssh root@$HOST "nohup $DIR/start_record.sh $wl >> $DIR/monitoring/start_record_log 2>&1"
+    echo $num_cores
+    if [ -z $num_cores ]; then
+        echo No cores
+        exit
+    fi
+    ssh root@$HOST "nohup $DIR/start_record_cores.sh $num_cores restart >> $DIR/monitoring/start_record_log 2>&1"
     ./test_workload.sh $wl $clean $thp
-    ssh root@$HOST "$DIR/stop_record.sh $wl restart >> $DIR/monitoring/stop_record_log 2>&1"
+    ssh root@$HOST "$DIR/stop_record_cores.sh $num_cores >> $DIR/monitoring/stop_record_log 2>&1"
     cwd=`pwd`
     cd $DIR/logs/hdr
     for f in *.hdr; do
@@ -54,7 +33,39 @@ run_workload_restart()
    	fi
     done
     cd $cwd
-	./delete_logs.sh $wl
+	./delete_logs_cores.sh $wl $num_cores
+}
+
+
+run_workload()
+{
+    wl=$1
+    num_cores=$2
+    if [ ! -z $2 ] && [ $2 == 'clean' ]; then
+        clean=$2
+        num_cores=$3
+    else
+	clean=
+    fi
+
+    echo $num_cores
+    if [ -z $num_cores ]; then
+        echo No cores
+        exit
+    fi
+    ssh root@$HOST "nohup $DIR/start_record_cores.sh $num_cores >> $DIR/monitoring/start_record_log 2>&1"
+    ./test_workload.sh $wl $clean $thp
+    ssh root@$HOST "$DIR/stop_record_cores.sh $num_cores restart >> $DIR/monitoring/stop_record_log 2>&1"
+    cwd=`pwd`
+    cd $DIR/logs/hdr
+    for f in *.hdr; do
+	if [ -e "$f" ]; then
+	# Use .hd instead of .hdr to avoid recursive expansion of files from previous workloads
+	    mv $f ${f%.*}"_"$wl".hdr"
+   	fi
+    done
+    cd $cwd
+	./delete_logs_cores.sh $wl"_warmup_" $num_cores
 }
 
 run_test()
@@ -64,42 +75,34 @@ run_test()
 	echo 'Running Workload A'
 	# sshpass -p$ROOT_PASSWD ssh -tt root@localhost << EOF
 	# $(typeset -f run_workload)
-	run_workload a clean $1
-	#run_workload a $1
-	run_workload_restart a $1
+	#run_workload a clean $1
 	# EOF
 
 	# Run WL B - Read Heavy, 95% read, 5% writes
 	echo
 	echo 'Running Workload B'
-	run_workload b $1
-	run_workload_restart b $1
-
+	#run_workload b $1
 	# Run WL C - Read Only
 	echo
 	echo 'Running Workload C'
-	#run_workload c clean $1
-	run_workload c $1
-    run_workload_restart c $1
-	#run_workload c $1
+	#run_workload c clean $1 $2
+	run_workload c $1 $2
+	run_workload_restart c $1 $2
 
 	# Run WL R - Read Only, Random Reads
 	echo
 	echo 'Running Workload R'
-	run_workload r $1
-    run_workload_restart r $1
+	#run_workload r $1
 
 	# Run WL F - Read-Modify-Write
 	echo
 	echo 'Running Workload F'
-	run_workload f $1
-    run_workload_restart f $1
+	#run_workload f $1
 
 	# Run WL D - Always read latest records
 	echo
 	echo 'Running Workload D'
 	#run_workload d $1
-    #run_workload_restart d $1
 	#run_workload d $1
 	#run_workload d $1
 
@@ -107,7 +110,6 @@ run_test()
 	echo
 	echo 'Running Workload E'
 	#run_workload e clean $1
-    #run_workload_restart e $1
 
 	# Change back all .hd files to .hdr
 	#cwd=`pwd`
@@ -118,36 +120,12 @@ run_test()
 	#cd $cwd
 }
 
-ssh -t root@$HOST "$DIR/disable_2_nodes.sh"
-run_test $1 
+run_test $1 2
+run_test $1 4
+run_test $1 6
+run_test $1 8
+run_test $1 12
+run_test $1 16
+run_test $1 24
+run_test $1 32
 
-# Reboot host
-ssh -t root@$HOST "reboot now"
-sleep 300 # 5 minutes
-
-ping $HOST -c 4
-if ! [ $? -eq 0 ]; then
-    sleep 300 # 5 more mins
-    ping $HOST -c 4
-	if ! [ $? -eq 0 ]; then
-	    echo "Host $HOST not up after 10 minutes!"
-	    exit
-	fi
-fi
-
-echo Host $HOST rebooted successfully...
-
-# Enable THP
-ssh -t root@$HOST "$DIR/disable_2_nodes.sh"
-ssh root@$HOST "$DIR/enable_thp.sh >> $DIR/monitoring/enable_thp_log 2>&1"
-if ! [ $? -eq 0 ]; then
-    echo Failed to enable THP on host $HOST
-    exit
-fi
-
-echo THP Enabled...Starting second benchmark
-
-run_test thp $1
-
-echo Host $HOST rebooting...
-ssh -t root@$HOST "reboot now"

@@ -19,6 +19,7 @@ Java 11 removes the default existing packages of Javax XML bind. This causes a c
 
 ## Config
 Fix the `test_workload.sh` if need to set the path to `YCSB_BASE` <br>
+Run `export HOST=<Server IP>` from the bash shell before starting the benchmark run. <br>
 
 ## Capturing Base statistics
 Ensure that transparent huge paging is set to `never` or `madvise`, and run `benchmark.sh` to capture logs for base statistics. Specify the `monitor` argument as well, to capture memory and CPU usage stats <br>
@@ -52,3 +53,6 @@ There would be a tarball generated under `jdbc/target` folder, which can be extr
 Set the correct properties for the database in the file `db.properties` <br>
 Run the YCSB benchmark for MySQL by running the script `mysql-bench.sh ycsb [thp]` <br>
 Collection of logs, Generation of graphs etc. is identical to procedure with MongoDB <br>
+
+## Running Core Scalability tests
+This is independent of THP. These tests can be run through the `benchmark_cores.sh` script.

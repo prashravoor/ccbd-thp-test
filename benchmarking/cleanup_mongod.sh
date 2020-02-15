@@ -1,4 +1,4 @@
 #!/bin/bash
 
-HOST=
-mongo --host $HOST < /home/student1/thp/ccbd-thp-test/benchmarking/cleanup.mdb
+HOST=$HOST
+mongo --host $HOST < /home/prashanth/thp/ccbd-thp-test/benchmarking/cleanup.mdb

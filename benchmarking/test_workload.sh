@@ -6,7 +6,7 @@ YCSB_BASE=~/thp/ycsb-mongodb-binding-0.15.0
 YCSB=$YCSB_BASE/bin/ycsb
 WORKLOADS=$YCSB_BASE/workloads
 WL=lg_wl_hist
-HOST=
+export HOST=$HOST
 DIR=/home/prashanth/thp/ccbd-thp-test/benchmarking
 
 wl='a'
@@ -19,7 +19,7 @@ fi
 wl=$1
 wl_name=$WORKLOADS/workload$wl
 outfile=logs/json_$wl.json
-if [ $wl -eq "e" ]; then
+if [ $wl == "e" ]; then
     WL=lg_wl_hist_e
 fi
 
@@ -34,9 +34,10 @@ fi
 
 if [ ! -z $2 ] && [ $2 == 'clean' ]; then
     echo 'Cleaning and recreating DB'
-    ssh -t root@$HOST "/home/prashanth/thp/ccbd-thp-test/benchmarking/cleanup_mongod.sh"
+    #ssh -t root@$HOST "/home/prashanth/thp/ccbd-thp-test/benchmarking/cleanup_mongod.sh"
+    ./cleanup_mongod.sh
     $YCSB load mongodb-async -P $wl_name -P $WL -p exportfile=$outfile -s 2> logs/errors_load_wl_$wl | tee logs/wl_load_$wl.txt
-    ssh root@$HOST "$DIR/stop_record.sh $wl >> $DIR/monitoring/stop_record_log 2>&1"
+    ssh root@$HOST "$DIR/stop_record.sh $wl restart >> $DIR/monitoring/stop_record_log 2>&1"
     cwd=`pwd`
     cd $DIR/logs/hdr
     for f in *.hdr; do
