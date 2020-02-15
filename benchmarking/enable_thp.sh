@@ -4,7 +4,8 @@ db_pid=`ps -ef | grep mongod_thp.conf | grep -v numactl | grep -v grep | awk '{p
 if [ -z $db_pid ]; then
     echo "No server instance found!"
 else
-    kill $db_pid
+    /usr/bin/mongod --config /etc/mongod_thp.conf --shutdown
+    echo Stopped Mongodb process $db_pid
     sleep 10
 fi
 
@@ -20,6 +21,6 @@ echo always > /sys/kernel/mm/transparent_hugepage/enabled
 echo defer > /sys/kernel/mm/transparent_hugepage/defrag
 
 
-nohup numactl --interleave=all /usr/bin/mongod --config /etc/mongod_thp.conf & disown
-sleep 5
-echo Server started..
+#nohup numactl --interleave=all -N 0,1 /usr/bin/mongod --config /etc/mongod_thp.conf & disown
+#sleep 5
+#echo Server started..

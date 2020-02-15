@@ -44,12 +44,6 @@ mdb_proc = psutil.Process(mdb_pid)
 num_cpus = psutil.cpu_count()
 # num_cpus = 12
 
-psutil.cpu_percent()
-mdb_proc.cpu_percent()
-for thp_proc in thp_procs:
-    thp_proc.cpu_percent()
-sys_mem_kb = (psutil.virtual_memory().total) / 1024
-
 net_if = 'eno1' # Change as per system need
 warned = False
 
@@ -75,8 +69,15 @@ def human_readable(load):
     
     return '{:.2f}{}'.format(rem, suffix[i])
 
-sleep_time = 10
+sleep_time = 3
 
+psutil.cpu_percent()
+mdb_proc.cpu_percent()
+for thp_proc in thp_procs:
+    thp_proc.cpu_percent()
+sys_mem_kb = (psutil.virtual_memory().total) / 1024
+
+iter_ctr = 0
 while True:
     netstats = get_net_stats()
     time.sleep(sleep_time)
@@ -93,16 +94,17 @@ while True:
         thp_mem += thp_proc.memory_percent()
 
     mdb_mem_percent = mdb_proc.memory_percent()
-    huge_page_per,num_pages = get_huge_page_per(mdb_pid)
+    if iter_ctr % 3 == 0:
+        huge_page_per,num_pages = get_huge_page_per(mdb_pid)
     huge_page_per = (huge_page_per / mdb_mem_percent) * 100 # huge_page_per is percentage of overall memory. Dividing by mdb_mem_percent gives % huge pages of MongoDB memory
     log('{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{},{}'.format(
             100 * (psutil.virtual_memory().used/psutil.virtual_memory().total), (psutil.cpu_percent()),
-            #mdb_mem_percent, mdb_proc.cpu_percent()/num_cpus, # Normalize to 100%
-            mdb_mem_percent, mdb_proc.cpu_percent(), # Normalize to 100%
+            mdb_mem_percent, mdb_proc.cpu_percent()/num_cpus, # Normalize to 100%
+            #mdb_mem_percent, mdb_proc.cpu_percent(), # Normalize to 100%
             #thp_mem, thp_cpu/num_cpus, # Normalize to 100%
             thp_mem, thp_cpu, # Normalize to 100%
             huge_page_per,net_load,num_pages
         )
-    ) 
+    )
+    iter_ctr += 1 
 
- 
